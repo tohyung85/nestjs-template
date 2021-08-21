@@ -2,10 +2,10 @@ import { Base } from '../../shared/entities/base.entity';
 import { Column, Entity } from 'typeorm';
 
 @Entity()
-export class User extends Base {
+export class UserProfile extends Base {
   @Column()
-  email: string;
+  firstName: string;
 
   @Column()
-  isActive: boolean;
+  lastName: string;
 }

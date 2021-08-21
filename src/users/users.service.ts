@@ -12,4 +12,10 @@ export class UsersService {
   findAll(): Promise<User[]> {
     return this.usersRespository.find();
   }
+  testAdd(): Promise<User> {
+    const user = new User();
+    user.email = 'testing@gmail.com';
+    user.isActive = true;
+    return this.usersRespository.save(user);
+  }
 }
