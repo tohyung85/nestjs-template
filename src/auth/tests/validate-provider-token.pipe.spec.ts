@@ -1,4 +1,4 @@
-import { ValidateProviderTokenPipe } from './validate-provider-token.pipe';
+import { ValidateProviderTokenPipe } from '../validate-provider-token.pipe';
 
 describe('ValidateProviderTokenPipe', () => {
   it('should be defined', () => {

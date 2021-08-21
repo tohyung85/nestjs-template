@@ -1,10 +1,8 @@
-import { HttpService } from '@nestjs/axios';
-import { Body, Controller, Post, Request, UsePipes } from '@nestjs/common';
-import { AuthService } from './auth.service';
-// import { ExchangeTokenDto } from './exchange-token.dto';
-import { ProviderUserDto } from './provider-user.dto';
-import { RefreshTokenDto } from './refresh-token.dto';
-import { ValidateProviderTokenPipe } from './validate-provider-token.pipe';
+import { Body, Controller, Post } from '@nestjs/common';
+import { AuthService } from '../auth/auth.service';
+import { ProviderUserDto } from '../auth/provider-user.dto';
+import { RefreshTokenDto } from '../auth/refresh-token.dto';
+import { ValidateProviderTokenPipe } from '../auth/validate-provider-token.pipe';
 
 @Controller('users')
 export class UsersController {
