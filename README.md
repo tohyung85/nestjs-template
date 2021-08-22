@@ -1,73 +1,77 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+## Nestjs API Server Starter
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Starter Template for Nestjs Backend APIs configured with:
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+- TypeORM Postgres
+- Dockerfile + Compose for Containerization
+- Authentication Routes with token refreh
 
-## Description
+Usage Instructions:
+\*Create an .env file with the following parameters:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ npm install
+```
+PORT='8080'
+RDS_HOSTNAME='hostname'
+RDS_USERNAME='username'
+RDS_PASSWORD='password'
+RDS_PORT='5432'
+RDS_DBNAME='dbname'
+JWT_SECRET="somethingsecret"
 ```
 
-## Running the app
+For Development Use:
+This repository is set up for usage with VSCode Remote Container extension.
+The development container has been set up to create an isolated docker volume for storage and and editing of source code.
+This is to enable better disk write performance on Mac/Windows and also prevent file polution on your local file system.
+Refer to the [vscode docs](https://code.visualstudio.com/docs/remote/containers-advanced#_improving-container-disk-performance) for more details
 
-```bash
-# development
-$ npm run start
+1. Update 'my_app' to your custom app name in docker-compose.yml in .devcontainer folder:
 
-# watch mode
-$ npm run start:dev
+```
+  volumes:
+    # Update this to wherever you want VS Code to mount the folder of your project
+    - my_app:/usr/src/app
 
-# production mode
-$ npm run start:prod
+volumes:
+  my_app:
 ```
 
-## Test
+2. You should also configure your ssh agents to set up your keys to enable git usage in the container especially for private repositories. For MacOs it will simply be
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```
+ssh-add $HOME/.ssh/github_rsa
 ```
 
-## Support
+\*Replace github_rsa with the name of your private key file
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+More details can be found [here](https://code.visualstudio.com/docs/remote/containers#_using-ssh-keys)
 
-## Stay in touch
+3. In VSCode, Run command Remote Containers: Open Folder in Container...
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+4. You can then do your development within the container
 
-## License
+Alternatively you can do your development without using any containers. In which case you will need to do an:
 
-Nest is [MIT licensed](LICENSE).
+```
+npm install
+```
+
+or
+
+```
+yarn install
+```
+
+5. If you utilize a development container and you need to integrate it with frontend docker container you should add the api container to a network shared by the frontend container using:
+
+```
+docker network connect [OPTIONS] FRONTEND_CONTAINER_NETWORK API_CONTAINER
+```
+
+For Deployment in a Docker Container:
+
+You will just need to run:
+
+```sh
+docker-compose up
+```
