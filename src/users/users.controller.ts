@@ -1,5 +1,14 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import { AuthGuard } from '../auth/auth.guard';
 import { AuthService } from '../auth/auth.service';
 import { ProviderUserDto } from '../auth/provider-user.dto';
 import { RefreshTokenDto } from '../auth/refresh-token.dto';
@@ -12,10 +21,16 @@ export class UsersController {
     private authService: AuthService,
     private userService: UsersService,
   ) {}
-  @Post('exchange-token')
-  async exchangeToken(
+  @Post('sign-in')
+  async signIn(
     @Body(ValidateProviderTokenPipe) providerUserDto: ProviderUserDto,
   ) {
+    console.log(providerUserDto);
+    const { email, firstName, lastName, avatar } = providerUserDto;
+    const existingUser = await this.userService.findUserByEmail(email);
+    if (!existingUser)
+      await this.userService.create({ email, firstName, lastName });
+
     return this.authService.generateTokens(providerUserDto);
   }
   @Post('refresh-token')
@@ -23,9 +38,14 @@ export class UsersController {
     const { token } = refreshTokenDto;
     return this.authService.refreshToken(token);
   }
-  @Post('test')
-  async testAdd() {
-    const result = await this.userService.testAdd();
-    return result;
+  @Get('me')
+  @UseGuards(AuthGuard)
+  async getMe(@Request() req) {
+    const { email } = req.user;
+
+    const user = await this.userService.findUserByEmail(email);
+
+    if (!user) throw new HttpException('NotFound', HttpStatus.NOT_FOUND);
+    return user;
   }
 }

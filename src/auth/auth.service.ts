@@ -9,6 +9,14 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  async verifyToken(token) {
+    const payload = await this.jwtService.verifyAsync(token);
+
+    console.log('verified payload', payload);
+
+    return payload;
+  }
+
   async generateTokens(user) {
     const accessToken = await this.jwtService.signAsync(user, {
       expiresIn: '5m',

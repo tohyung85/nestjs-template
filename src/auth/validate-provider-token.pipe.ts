@@ -32,13 +32,25 @@ export class ValidateProviderTokenPipe
     throw new HttpException('Not Acceptable', HttpStatus.NOT_ACCEPTABLE);
   }
 
+  private async validateFirebaseToken(token) {}
+
   private async validateFacebookToken(token) {
     try {
       const checkUserResponse = await lastValueFrom(
         this.http.get(`https://graph.facebook.com/me?access_token=${token}`),
       );
 
+      let firstName = '';
+      let lastName = '';
+
       const { name, id } = checkUserResponse.data;
+      if (name) {
+        const nameArr = name.split(' ');
+        firstName = nameArr.length > 0 ? nameArr[0] : '';
+        lastName =
+          nameArr.length > 1 ? nameArr.slice(1, nameArr.length).join(' ') : '';
+      }
+
       const userDataResponse = await lastValueFrom(
         this.http.get(
           `https://graph.facebook.com/${id}?fields=id,name,email,picture&access_token=${token}`,
@@ -47,7 +59,7 @@ export class ValidateProviderTokenPipe
 
       const { email, picture } = userDataResponse.data;
 
-      return { email, name, id, avatar: picture.data.url };
+      return { email, firstName, lastName, id, avatar: picture.data?.url };
     } catch (error) {
       console.log('error', error);
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);

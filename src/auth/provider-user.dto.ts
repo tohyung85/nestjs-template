@@ -1,6 +1,7 @@
 export class ProviderUserDto {
   email: string;
-  name?: string;
+  firstName?: string;
+  lastName?: string;
   id?: string;
   avatar?: string;
 }
